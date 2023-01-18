@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -62,6 +63,21 @@ public class TutorialController {
 
         return optionalTutorial
                 .map(tutorial -> new ResponseEntity<>(tutorial, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @PutMapping("/tutorials/{id}")
+    public ResponseEntity<Tutorial> updateTutorial(@PathVariable("id") long id, @RequestBody Tutorial tutorial) {
+        Optional<Tutorial> optionalTutorial = tutorialRepository.findById(id);
+
+        return optionalTutorial
+                .map(updated -> {
+                    if (tutorial.getTitle() != null) updated.setTitle(tutorial.getTitle());
+                    if (tutorial.getDescription() != null) updated.setDescription(tutorial.getDescription());
+                    updated.setPublished(tutorial.isPublished()); // Default value for primitive types is not null
+
+                    return new ResponseEntity<>(tutorialRepository.save(updated), HttpStatus.OK);
+                })
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
