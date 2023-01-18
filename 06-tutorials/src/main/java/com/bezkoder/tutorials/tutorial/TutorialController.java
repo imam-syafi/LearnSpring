@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -35,9 +36,15 @@ public class TutorialController {
     }
 
     @GetMapping("/tutorials")
-    public ResponseEntity<List<Tutorial>> getAllTutorials() {
+    public ResponseEntity<List<Tutorial>> getAllTutorials(@RequestParam(required = false) String title) {
         try {
-            List<Tutorial> tutorials = new ArrayList<>(tutorialRepository.findAll());
+            List<Tutorial> tutorials = new ArrayList<>();
+
+            if (title == null) {
+                tutorials.addAll(tutorialRepository.findAll());
+            } else {
+                tutorials.addAll(tutorialRepository.findByTitleContaining(title));
+            }
 
             return new ResponseEntity<>(tutorials, HttpStatus.OK);
         } catch (Exception e) {
