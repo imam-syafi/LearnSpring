@@ -1,5 +1,6 @@
 package com.bezkoder.tutorials.controller;
 
+import com.bezkoder.tutorials.exception.ResourceNotFoundException;
 import com.bezkoder.tutorials.model.Tutorial;
 import com.bezkoder.tutorials.repository.TutorialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,7 @@ public class TutorialController {
     public ResponseEntity<Tutorial> getTutorialById(@PathVariable("id") long id) {
         return tutorialRepository.findById(id)
                 .map(tutorial -> new ResponseEntity<>(tutorial, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Tutorial with id = " + id));
     }
 
     @PutMapping("/{id}")
@@ -67,7 +68,7 @@ public class TutorialController {
 
                     return new ResponseEntity<>(tutorialRepository.save(updated), HttpStatus.OK);
                 })
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Tutorial with id = " + id));
     }
 
     @DeleteMapping("/{id}")
