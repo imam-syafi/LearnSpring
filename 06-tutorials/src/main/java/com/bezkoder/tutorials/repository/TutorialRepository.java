@@ -1,5 +1,6 @@
-package com.bezkoder.tutorials.tutorial;
+package com.bezkoder.tutorials.repository;
 
+import com.bezkoder.tutorials.model.Tutorial;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
