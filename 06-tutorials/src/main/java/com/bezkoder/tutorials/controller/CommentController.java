@@ -50,6 +50,17 @@ public class CommentController {
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
+    @DeleteMapping("/tutorials/{tutorialId}/comments")
+    public ResponseEntity<HttpStatus> deleteAllCommentsOfTutorial(@PathVariable(value = "tutorialId") Long tutorialId) {
+        if (!tutorialRepository.existsById(tutorialId)) {
+            throw new ResourceNotFoundException("Not found Tutorial with id = " + tutorialId);
+        }
+
+        commentRepository.deleteByTutorialId(tutorialId);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @GetMapping("/comments/{id}")
     public ResponseEntity<Comment> getCommentById(@PathVariable(value = "id") Long id) {
         return commentRepository.findById(id)
