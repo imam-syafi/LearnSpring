@@ -7,6 +7,7 @@ import com.bezkoder.tutorials.repository.TutorialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,5 +59,11 @@ public class CommentController {
                     return new ResponseEntity<>(commentRepository.save(comment), HttpStatus.OK);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Comment with id = " + id));
+    }
+
+    @DeleteMapping("/comments/{id}")
+    public ResponseEntity<HttpStatus> deleteComment(@PathVariable("id") long id) {
+        commentRepository.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
