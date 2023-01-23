@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,5 +47,16 @@ public class CommentController {
         List<Comment> comments = commentRepository.findByTutorialId(tutorialId);
 
         return new ResponseEntity<>(comments, HttpStatus.OK);
+    }
+
+    @PutMapping("/comments/{id}")
+    public ResponseEntity<Comment> updateComment(@PathVariable(value = "id") long id,
+                                                 @RequestBody Comment commentPut) {
+        return commentRepository.findById(id)
+                .map(comment -> {
+                    comment.setContent(commentPut.getContent());
+                    return new ResponseEntity<>(commentRepository.save(comment), HttpStatus.OK);
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Comment with id = " + id));
     }
 }
