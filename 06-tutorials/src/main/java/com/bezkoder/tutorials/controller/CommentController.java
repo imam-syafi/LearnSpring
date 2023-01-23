@@ -50,6 +50,13 @@ public class CommentController {
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
+    @GetMapping("/comments/{id}")
+    public ResponseEntity<Comment> getCommentById(@PathVariable(value = "id") Long id) {
+        return commentRepository.findById(id)
+                .map(comment -> new ResponseEntity<>(comment, HttpStatus.OK))
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Comment with id = " + id));
+    }
+
     @PutMapping("/comments/{id}")
     public ResponseEntity<Comment> updateComment(@PathVariable(value = "id") long id,
                                                  @RequestBody Comment commentPut) {
