@@ -7,11 +7,14 @@ import com.bezkoder.tutorials.repository.TutorialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -32,5 +35,16 @@ public class CommentController {
                     return new ResponseEntity<>(commentRepository.save(commentPost), HttpStatus.CREATED);
                 })
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Tutorial with id = " + tutorialId));
+    }
+
+    @GetMapping("/tutorials/{tutorialId}/comments")
+    public ResponseEntity<List<Comment>> getAllCommentsByTutorialId(@PathVariable(value = "tutorialId") Long tutorialId) {
+        if (!tutorialRepository.existsById(tutorialId)) {
+            throw new ResourceNotFoundException("Not found Tutorial with id = " + tutorialId);
+        }
+
+        List<Comment> comments = commentRepository.findByTutorialId(tutorialId);
+
+        return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 }
